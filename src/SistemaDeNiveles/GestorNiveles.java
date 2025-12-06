@@ -1,24 +1,28 @@
 package SistemaDeNiveles;
+import PatronesComportamiento.TemplateMethod.Llama;
+import PatronesComportamiento.TemplateMethod.FuegoSpawner;
+import PatronesComportamiento.TemplateMethod.BarrilSpawner;
+import PatronesComportamiento.TemplateMethod.ItemSpawner;
+import PatronesComportamiento.Statregy.Martillo;
+import PatronesComportamiento.State.EstadoNivel;
+import PatronesCreacionales.Factory.PlataformaConfig;
+import PatronesCreacionales.Factory.ConfiguracionNivel;
 import Entidades.Enemigos.*;
-import SistemaDeNiveles.Configuracion.*;
-import SistemaDeSoporte.Handler;
-import SistemaSoporte.Spawners.*;
-import SistemaDeSoporte.EstadoJuego;
+import PatronesComportamiento.Mediator.Handler;
+import PatronesCreacionales.Singleton.EstadoJuego;
 import Entidades.NPCs.*;
 import Entidades.Escenario.PlataformaMovil;
 import Entidades.Jugador;
-import Entidades.Items.*;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import mariotest.Juego;
+import PatronesEstructurales.Facade.Juego;
 
 /**
  * Gestor de Niveles - Patrón FACTORY + STRATEGY
  * Maneja carga, configuración y transiciones entre niveles
- * CORREGIDO: Recarga sprites de victoria después de cambiar nivel
  * 
  * @author LENOVO
  */
@@ -97,9 +101,9 @@ public class GestorNiveles {
             spritesDKAgarra = Juego.getTextura().getDKAgarraSprites();
             
             if (spriteCorazon != null && spriteCorazonRoto != null) {
-                System.out.println("[GESTOR] ✓ Sprites de victoria cargados correctamente");
+                System.out.println("[GESTOR] Sprites de victoria cargados correctamente");
             } else {
-                System.err.println("[GESTOR] ⚠ ADVERTENCIA: Sprites de victoria son NULL");
+                System.err.println("[GESTOR] ADVERTENCIA: Sprites de victoria son NULL");
                 System.err.println("  - spriteCorazon: " + (spriteCorazon != null ? "OK" : "NULL"));
                 System.err.println("  - spriteCorazonRoto: " + (spriteCorazonRoto != null ? "OK" : "NULL"));
             }
@@ -614,7 +618,7 @@ public class GestorNiveles {
     public BufferedImage getSpriteCorazon() {
         // Verificar y recargar si es necesario
         if (spriteCorazon == null) {
-            System.err.println("[GESTOR] ⚠ spriteCorazon es NULL, intentando recargar...");
+            System.err.println("[GESTOR] spriteCorazon es NULL, intentando recargar...");
             cargarSpritesVictoria();
         }
         return spriteCorazon;
@@ -626,7 +630,7 @@ public class GestorNiveles {
     public BufferedImage getSpriteCorazonRoto() {
         // Verificar y recargar si es necesario
         if (spriteCorazonRoto == null) {
-            System.err.println("[GESTOR] ⚠ spriteCorazonRoto es NULL, intentando recargar...");
+            System.err.println("[GESTOR] spriteCorazonRoto es NULL, intentando recargar...");
             cargarSpritesVictoria();
         }
         return spriteCorazonRoto;

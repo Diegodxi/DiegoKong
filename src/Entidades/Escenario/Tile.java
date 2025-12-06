@@ -2,7 +2,7 @@ package Entidades.Escenario;
 
 import Entidades.JuegoObjetos;
 import SistemaDeSoporte.ObjetosID;
-import mariotest.Juego;
+import PatronesEstructurales.Facade.Juego;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -19,13 +19,12 @@ public class Tile extends JuegoObjetos {
     
     private int tileID;                // ID del tile en Tiled
     private BufferedImage sprite;      // Sprite a renderizar
-    private boolean tieneColision;     // ¿Es sólido? (LA DIFERENCIA CLAVE)
+    private boolean tieneColision;     // ¿Es solido? (LA DIFERENCIA CLAVE)
     private boolean esFondo;           // ¿Es parte del fondo lejano?
     
     // ==================== CONSTRUCTORES ====================
     
     /**
-     * Constructor completo (privado - usar factory methods)
      * 
      * @param x Posición X en el mundo
      * @param y Posición Y en el mundo
@@ -38,18 +37,15 @@ public class Tile extends JuegoObjetos {
      */
     protected Tile(int x, int y, int width, int height, int scale, 
                  int tileID, boolean tieneColision, boolean esFondo) {
-        super(x, y, ObjetosID.Tile, width, height, scale);
+        super(x, y, ObjetosID.Bloque, width, height, scale);
         this.tileID = tileID;
         this.tieneColision = tieneColision;
         this.esFondo = esFondo;
         cargarSprite();
     }
     
-    // ==================== FACTORY METHODS ====================
-    
     /**
      * Crea un BLOQUE SÓLIDO (con colisión)
-     * Equivalente a la antigua clase Bloque
      * 
      * Uso: plataformas, muros, suelos
      */
@@ -61,8 +57,7 @@ public class Tile extends JuegoObjetos {
     
     /**
      * Crea un TILE VISUAL (sin colisión)
-     * Equivalente a la antigua clase TileVisual
-     * 
+     *
      * Uso: decoraciones, plantas, nubes
      * 
      * @param esFondo true = fondo lejano, false = primer plano decorativo
@@ -158,7 +153,7 @@ public class Tile extends JuegoObjetos {
         }
     }
     
-    // ==================== COLISIÓN (LA MAGIA) ====================
+    // ==================== COLISION ====================
     
     /**
      * Retorna el área de colisión del tile
@@ -166,8 +161,6 @@ public class Tile extends JuegoObjetos {
      * COMPORTAMIENTO:
      * - Si tieneColision = true:  Retorna rectángulo real (jugador colisiona)
      * - Si tieneColision = false: Retorna rectángulo vacío (jugador atraviesa)
-     * 
-     * Esta es LA ÚNICA diferencia entre Bloque y TileVisual
      */
     @Override
     public Rectangle getBounds() {

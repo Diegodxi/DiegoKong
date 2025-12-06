@@ -13,8 +13,8 @@ import Entidades.Escenario.Tile;
 public enum ObjetosID {
     Jugador,
     // Elementos del escenario
-    Tile,              // Plataformas y bloques sólidos o no
-    Pipe,             // Tuberías (heredado de Mario, puede usarse para otros elementos)
+    Bloque,// Plataformas y bloques sólidos o no
+    Pipe, // tuberias
     Escalera,// Escaleras normales
     Item,
     EscaleraRota,     // Escaleras rotas o dañadas

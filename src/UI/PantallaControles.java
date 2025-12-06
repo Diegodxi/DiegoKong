@@ -1,12 +1,13 @@
 package UI;
 
-import UI.EstadoJuegoBase;
+import PatronesComportamiento.State.EstadoJuegoEnum;
+import PatronesComportamiento.State.EstadoJuegoBase;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import mariotest.GestorEstados;
-import mariotest.Juego;
+import PatronesComportamiento.State.GestorEstados;
+import PatronesEstructurales.Facade.Juego;
 
 /**
  * Pantalla de Controles del juego
@@ -34,17 +35,7 @@ public class PantallaControles extends EstadoJuegoBase {
      * Carga la imagen de controles si existe
      */
     private void cargarImagenControles() {
-        /*
-        try {
-            imagenControles = ImageIO.read(
-                getClass().getResourceAsStream("/Imagenes/controles.png")
-            );
-            System.out.println("[CONTROLES] Imagen cargada");
-        } catch (Exception e) {
-            System.err.println("[CONTROLES] No se pudo cargar imagen: " + e.getMessage());
-            imagenControles = null;
-        }
-        */
+    
     }
     
     @Override

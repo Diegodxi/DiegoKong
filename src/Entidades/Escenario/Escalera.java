@@ -23,8 +23,7 @@ public class Escalera extends JuegoObjetos {
 
     @Override
     public void tick() {
-        // Las escaleras no necesitan lógica de actualización por ahora
-        // Aquí podrías agregar animaciones o efectos especiales
+        // Las escaleras no necesitan lógica por ahora
     }
 
     @Override

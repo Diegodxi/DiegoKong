@@ -1,14 +1,16 @@
 package UI;
 
-import SistemaDeSoporte.EstadoJuego;
+import PatronesComportamiento.State.EstadoJuegoBase;
+import PatronesComportamiento.State.EstadoJuegoEnum;
+import PatronesCreacionales.Singleton.EstadoJuego;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import mariotest.GestorEstados;
-import mariotest.Juego;
+import PatronesComportamiento.State.GestorEstados;
+import PatronesEstructurales.Facade.Juego;
 
 /**
  * Pantalla de Victoria Final
- * CORREGIDO: Reinicia correctamente el juego al presionar ENTER
+ * 
  * @author LENOVO
  */
 public class PantallaVictoria extends EstadoJuegoBase {
@@ -58,12 +60,12 @@ public class PantallaVictoria extends EstadoJuegoBase {
             mejorRacha = estado.getMejorRacha();
             enemigosEliminados = estado.getEnemigosEliminados();
             
-            System.out.println("📊 ESTADÍSTICAS CAPTURADAS:");
+            System.out.println("ESTADÍSTICAS CAPTURADAS:");
             System.out.println("   Puntos: " + puntosTotales);
             System.out.println("   Mejor Racha: " + mejorRacha);
             System.out.println("   Enemigos: " + enemigosEliminados);
         } else {
-            System.err.println("⚠️ EstadoJuego es NULL - usando valores por defecto");
+            System.err.println("️EstadoJuego es NULL - usando valores por defecto");
             puntosTotales = 0;
             mejorRacha = 0;
             enemigosEliminados = 0;
@@ -72,7 +74,7 @@ public class PantallaVictoria extends EstadoJuegoBase {
         ticksAnimacion = 0;
         alpha = 0f;
         
-        System.out.println("\n✅ PantallaVictoria lista");
+        System.out.println("\n PantallaVictoria lista");
         System.out.println("   Presiona ENTER para reiniciar");
         System.out.println("   Presiona ESC para volver al menú\n");
     }
@@ -202,10 +204,10 @@ public class PantallaVictoria extends EstadoJuegoBase {
     
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("[VICTORIA] 🔑 Tecla detectada: " + KeyEvent.getKeyText(e.getKeyCode()));
+        System.out.println("[VICTORIA] Tecla detectada: " + KeyEvent.getKeyText(e.getKeyCode()));
         
         if (ticksAnimacion < 60) {
-            System.out.println("[VICTORIA] ⏳ Esperando animación... (" + ticksAnimacion + "/60)");
+            System.out.println("[VICTORIA] Esperando animación... (" + ticksAnimacion + "/60)");
             return;
         }
         
@@ -213,11 +215,11 @@ public class PantallaVictoria extends EstadoJuegoBase {
         
         switch (key) {
             case KeyEvent.VK_ENTER:
-                System.out.println("[VICTORIA] ✅ Reiniciando juego desde nivel 1...");
+                System.out.println("[VICTORIA] Reiniciando juego desde nivel 1...");
                 
                 // CRÍTICO: Reiniciar completamente el juego
                 if (juego.getGestorNiveles() != null) {
-                    System.out.println("[VICTORIA] → Llamando a GestorNiveles.reiniciar()");
+                    System.out.println("[VICTORIA] Llamando a GestorNiveles.reiniciar()");
                     juego.getGestorNiveles().reiniciar();
                 }
                 
@@ -225,17 +227,17 @@ public class PantallaVictoria extends EstadoJuegoBase {
                 EstadoJuego.getInstance().reiniciar();
                 
                 // Cambiar a estado JUGANDO
-                System.out.println("[VICTORIA] → Cambiando a estado JUGANDO");
+                System.out.println("[VICTORIA] Cambiando a estado JUGANDO");
                 gestorEstados.cambiarEstado(EstadoJuegoEnum.JUGANDO);
                 break;
                 
             case KeyEvent.VK_ESCAPE:
-                System.out.println("[VICTORIA] ✅ Volviendo al menú principal...");
+                System.out.println("[VICTORIA]  Volviendo al menú principal...");
                 gestorEstados.cambiarEstado(EstadoJuegoEnum.MENU_PRINCIPAL);
                 break;
                 
             default:
-                System.out.println("[VICTORIA] ⚠️ Tecla no asignada: " + KeyEvent.getKeyText(key));
+                System.out.println("[VICTORIA] Tecla no asignada: " + KeyEvent.getKeyText(key));
         }
     }
     

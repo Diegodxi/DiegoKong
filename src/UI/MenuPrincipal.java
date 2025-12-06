@@ -1,10 +1,12 @@
 package UI;
 
+import PatronesComportamiento.State.EstadoJuegoBase;
+import PatronesComportamiento.State.EstadoJuegoEnum;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;   
-import mariotest.GestorEstados;
-import mariotest.Juego;
+import PatronesComportamiento.State.GestorEstados;
+import PatronesEstructurales.Facade.Juego;
 /**
  *
  * @author LENOVO
@@ -88,14 +90,14 @@ public class MenuPrincipal extends EstadoJuegoBase {
                 System.out.println("[MENU] Posición: (" + logoX + ", " + logoY + ")");
                 
             } else {
-                //MENSAJE DE ERROR de InterfazDeUsuario (según tu snippet)
+                //MENSAJE DE ERROR de InterfazDeUsuario 
                 System.err.println("¡ERROR! No se pudo encontrar el archivo gif en la ruta especificada");
                 System.err.println("[MENU] Ruta esperada: /imagenes/jugador/Titulo.gif");
                 imagenTitulo = null;
             }
             
         } catch (Exception e) {
-            // MENSAJE DE ERROR de InterfazDeUsuario (según tu snippet)
+            // MENSAJE DE ERROR de InterfazDeUsuario 
             System.err.println("¡ERROR! Ocurrio un problema al cargar el gif");
             e.printStackTrace();
             imagenTitulo = null;
@@ -116,7 +118,7 @@ public class MenuPrincipal extends EstadoJuegoBase {
     }
     
     /**
-     * RENDERIZADO APLICANDO LÓGICA DE InterfazDeUsuario
+     * RENDERIZADO APLICANDO Logica de InterfazDeUsuario
      */
     @Override
     public void render(Graphics g) {
@@ -150,12 +152,11 @@ public class MenuPrincipal extends EstadoJuegoBase {
             g.drawString(titulo, xTexto, 120);
         }
         
-        // ==================== OPCIONES DEL MENÚ (LÓGICA InterfazDeUsuario) ====================
+        // ==================== OPCIONES DEL MENÚ  ====================
         
         int yInicial;
         if (logoDisponible) {
             // Lógica de InterfazDeUsuario:
-            // y_opcion1 = y_logo_calculada + (tituloSize * 7.5f)
             yInicial = (int) (logoY + (tituloSize * 7.5f)); 
         } else {
             yInicial = 350; // Fallback
@@ -174,11 +175,11 @@ public class MenuPrincipal extends EstadoJuegoBase {
             
             String texto = obtenerTextoOpcion(opcion);
             
-            // LÓGICA DE CENTRADO (getXCentroTexto)
+            // LÓGICA DE CENTRADO 
             int anchoTexto = g.getFontMetrics().stringWidth(texto);
             int x = (Juego.getVentanaWidth() - anchoTexto) / 2;
             
-            // Indicador de selección (LÓGICA InterfazDeUsuario)
+            // Indicador de selección 
             if (esSeleccionada) {
                 g.drawString(">", x - tituloSize, y);
             }

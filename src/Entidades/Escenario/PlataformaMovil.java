@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import mariotest.Juego;
+import PatronesEstructurales.Facade.Juego;
 
 /**
  * 
@@ -33,7 +33,7 @@ public class PlataformaMovil extends Tile {
     private int duracionInvisible;    // Cuánto tiempo está invisible
     
     // Efectos visuales
-    private int alphaActual;          // Transparencia para efecto fade
+    private int alphaActual;          // Transparencia para efecto desvanecer
     private boolean fadeOut;          // Si está desapareciendo
     private boolean fadeIn;           // Si está apareciendo
     private static final int FADE_SPEED = 5;

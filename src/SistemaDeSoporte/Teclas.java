@@ -1,11 +1,12 @@
 package SistemaDeSoporte;
 
+import PatronesComportamiento.Mediator.Handler;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import mariotest.GestorEstados;
+import PatronesComportamiento.State.GestorEstados;
 
 /**
- * Manejo de teclas mejorado
+ * Manejo de teclas 
  * @author LENOVO 
  */
 public class Teclas extends KeyAdapter {
@@ -27,14 +28,14 @@ public class Teclas extends KeyAdapter {
     
     @Override
     public void keyPressed(KeyEvent e) {
-        // ✅ CRÍTICO: Delegar PRIMERO al gestor de estados
+        //  PRIMERO al gestor de estados
         if (gestorEstados != null) {
             gestorEstados.keyPressed(e);
         }
         
-        // ✅ Si NO estamos jugando, NO procesar teclas de movimiento
+        //  Si NO estamos jugando, NO procesar teclas de movimiento
         if (gestorEstados != null && !gestorEstados.estaJugando()) {
-            return; // ⚠️ IMPORTANTE: Salir aquí para menús/victoria
+            return; // Salir aquí para menús/victoria
         }
         
         int key = e.getKeyCode();
@@ -87,12 +88,12 @@ public class Teclas extends KeyAdapter {
     
     @Override
     public void keyReleased(KeyEvent e) {
-        // ✅ Delegar al gestor de estados
+        //  Delegar al gestor de estados
         if (gestorEstados != null) {
             gestorEstados.keyReleased(e);
         }
 
-        // ✅ Si NO estamos jugando, NO procesar
+        // Si NO estamos jugando, NO procesar
         if (gestorEstados != null && !gestorEstados.estaJugando()) {
             return;
         }
@@ -139,8 +140,6 @@ public class Teclas extends KeyAdapter {
             handler.getPlayer().detenerMovimiento();
         }
     }
-    
-    // ... resto del código sin cambios ...
     
     public boolean isKeyDown(int keyIndex) {
         if (keyIndex >= 0 && keyIndex < keyAbajo.length) {

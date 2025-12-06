@@ -1,7 +1,7 @@
 package Entidades.EfectosVisuales;
 
 import Entidades.JuegoObjetos;
-import SistemaDeSoporte.Handler;
+import PatronesComportamiento.Mediator.Handler;
 import SistemaDeSoporte.ObjetosID;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -89,7 +89,6 @@ public class ParticulaFuego extends JuegoObjetos {
     
     @Override
     public void aplicarGravedad() {
-        // Las partículas de fuego flotan, no caen
         // No aplicar gravedad
     }
 

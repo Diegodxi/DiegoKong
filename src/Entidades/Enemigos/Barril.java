@@ -4,9 +4,9 @@ import Entidades.Escenario.Escalera;
 import Entidades.JuegoObjetos;
 import Entidades.Jugador;
 import SistemaGFX.Animacion;
-import SistemaDeSoporte.Handler;
+import PatronesComportamiento.Mediator.Handler;
 import SistemaDeSoporte.ObjetosID;
-import mariotest.Juego;
+import PatronesEstructurales.Facade.Juego;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -180,7 +180,7 @@ public class Barril extends JuegoObjetos {
         enSuelo = false;
         
         for (JuegoObjetos obj : handler.getGameObjs()) {
-            if (obj.getId() == ObjetosID.Tile || obj.getId() == ObjetosID.Pipe) {
+            if (obj.getId() == ObjetosID.Bloque || obj.getId() == ObjetosID.Pipe) {
                 
                 // Colisión inferior (aterrizar en plataforma)
                 if (getBounds().intersects(obj.getBounds())) {

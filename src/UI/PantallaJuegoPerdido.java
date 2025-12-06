@@ -1,11 +1,12 @@
 package UI;
 
-import UI.EstadoJuegoBase;
-import SistemaDeSoporte.EstadoJuego;
+import PatronesComportamiento.State.EstadoJuegoEnum;
+import PatronesComportamiento.State.EstadoJuegoBase;
+import PatronesCreacionales.Singleton.EstadoJuego;
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import mariotest.GestorEstados;
-import mariotest.Juego;
+import PatronesComportamiento.State.GestorEstados;
+import PatronesEstructurales.Facade.Juego;
 
 /**
  * Pantalla de Game Over
@@ -25,7 +26,7 @@ public class PantallaJuegoPerdido extends EstadoJuegoBase {
     private int enemigosEliminados;
     private int mejorRacha;
     
-    // Animación de fade in
+    // Animación de transicion
     private float alpha;
     private static final int DURACION_FADE = 60;
     
@@ -67,7 +68,7 @@ public class PantallaJuegoPerdido extends EstadoJuegoBase {
     public void tick() {
         ticksAnimacion++;
         
-        // Fade in
+        // transicion
         if (alpha < 1.0f) {
             alpha += 1.0f / DURACION_FADE;
             if (alpha > 1.0f) {

@@ -1,6 +1,18 @@
 package Entidades;
 
-import Entidades.EfectosVisuales.PoderMartillo;
+import PatronesComportamiento.Mediator.Handler;
+import PatronesComportamiento.State.EstadoVidaJugador;
+import PatronesComportamiento.Observer.EventoJugadorDañado;
+import PatronesComportamiento.Observer.EventoReaparicionJugador;
+import PatronesComportamiento.Observer.EventoJugadorRecogeObjeto;
+import PatronesComportamiento.Observer.EventoJugadorPoder;
+import PatronesComportamiento.Observer.EventoMuerteJugador;
+import PatronesEstructurales.Composite.ComponenteFisicasJugador;
+import PatronesEstructurales.Composite.ComponenteEscaleraJugador;
+import PatronesEstructurales.Composite.ComponenteColisionJugador;
+import PatronesCreacionales.Singleton.Texturas;
+import PatronesCreacionales.Singleton.AdministradorEventos;
+import PatronesComportamiento.Statregy.PoderMartillo;
 import SistemaDeSoporte.*;
 import SistemaGFX.*;
 import java.awt.Color;
@@ -14,20 +26,20 @@ import java.awt.image.BufferedImage;
  * 
  */
 public class Jugador extends JuegoObjetos {
-    private static final float WIDTH = 16;
-    private static final float HEIGHT = 16;
+    private static final float WIDTH = 16; //ancho 
+    private static final float HEIGHT = 16; // alto
     
     // DEPENDENCIAS INYECTADAS 
     private final AdministradorEventos eventManager;
     private final Handler handler;
     private final Texturas textura;
     
-    // COMPONENTES (Component Pattern) 
-    private final ComponenteFisicasJugador physics;
-    private final ComponenteEscaleraJugador ladder;
+    // COMPONENTES (Composite Patron) 
+    private final ComponenteFisicasJugador fisicas;
+    private final ComponenteEscaleraJugador escalera;
     private final ComponenteColisionJugador collision;
     
-    //  ESTADO (State Pattern)
+    //  ESTADO (State Patron)
     private EstadoVidaJugador estadoVida;
     private Point puntoSpawn;
     private boolean invulnerable;
@@ -37,10 +49,10 @@ public class Jugador extends JuegoObjetos {
     private boolean tieneMartillo;
     
     // ANIMACIONES
-    private Animacion playerCaminaS;
-    private Animacion playerSubeEscalera;
-    private Animacion playerBajaEscalera;
-    private Animacion playerCaminaMartillo;
+    private Animacion jugadorCaminaS;
+    private Animacion jugadorSubeEscalera;
+    private Animacion jugadorBajaEscalera;
+    private Animacion jugadorCaminaMartillo;
     private Animacion muerteAnimacion;
     private Animacion currAnimacion;
     
@@ -53,7 +65,6 @@ public class Jugador extends JuegoObjetos {
     
     /**
      * Constructor con inyección de dependencias
-     * Patrón: Dependency Injection
      */
     public Jugador(float x, float y, int scale, Handler handler, AdministradorEventos eventManager) {
         super(x, y, ObjetosID.Jugador, WIDTH, HEIGHT, scale);
@@ -61,12 +72,12 @@ public class Jugador extends JuegoObjetos {
         // Inyección de dependencias
         this.handler = handler;
         this.eventManager = eventManager;
-        this.textura = mariotest.Juego.getTextura();
+        this.textura = PatronesEstructurales.Facade.Juego.getTextura();
         
-        // Inicializar componentes (Component Pattern)
-        this.physics = new ComponenteFisicasJugador(this, handler);
-        this.ladder = new ComponenteEscaleraJugador(this, handler);
-        this.collision = new ComponenteColisionJugador(this, handler, ladder, physics);
+        // Inicializar componentes (Composite Patron)
+        this.fisicas = new ComponenteFisicasJugador(this, handler);
+        this.escalera = new ComponenteEscaleraJugador(this, handler);
+        this.collision = new ComponenteColisionJugador(this, handler, escalera, fisicas);
         
         // Inicializar estado
         this.estadoVida = new EstadoVidaJugador.Vivo(this);
@@ -82,7 +93,7 @@ public class Jugador extends JuegoObjetos {
         // Inicializar animaciones
         inicializarAnimaciones();
         
-        System.out.println("[PLAYER] Creado con sistema de eventos y componentes");
+        System.out.println("[JUGADOR] Creado con sistema de eventos y componentes");
     }
     
     /**
@@ -99,18 +110,18 @@ public class Jugador extends JuegoObjetos {
         spriteMartillo = textura.getMarioMartillo();
         spriteS = textura.getMarioS();
         
-        playerCaminaS = new Animacion(5, spriteS[1], spriteS[2], spriteS[3]);
-        playerSubeEscalera = new Animacion(5, spriteS[5], spriteS[6], spriteS[7], 
+        jugadorCaminaS = new Animacion(5, spriteS[1], spriteS[2], spriteS[3]);
+        jugadorSubeEscalera = new Animacion(5, spriteS[5], spriteS[6], spriteS[7], 
                                            spriteS[8], spriteS[9], spriteS[10], spriteS[11]);
-        playerBajaEscalera = new Animacion(5, spriteS[5], spriteS[6], spriteS[7], 
+        jugadorBajaEscalera = new Animacion(5, spriteS[5], spriteS[6], spriteS[7], 
                                            spriteS[8], spriteS[9], spriteS[10], spriteS[11]);
-        playerCaminaMartillo = new Animacion(5, spriteMartillo[0], spriteMartillo[1],
+        jugadorCaminaMartillo = new Animacion(5, spriteMartillo[0], spriteMartillo[1],
                                              spriteMartillo[2], spriteMartillo[3],
                                              spriteMartillo[4], spriteMartillo[5]);
         muerteAnimacion = new Animacion(50, spriteMuerte[0], spriteMuerte[1],
                                        spriteMuerte[2], spriteMuerte[3], spriteMuerte[4]);
         
-        currAnimacion = playerCaminaS;
+        currAnimacion = jugadorCaminaS;
     }
     
     // ==================== TICK  ====================
@@ -134,15 +145,15 @@ public class Jugador extends JuegoObjetos {
         }
         
         // Tick de componentes
-        ladder.tick();
+        escalera.tick();
         
         //  APLICAR FÍSICA CORRECTAMENTE
-        if (ladder.isEnEscalera()) {
+        if (escalera.isEnEscalera()) {
             // En escalera: NO aplicar gravedad
             // La velocidad vertical es controlada por el componente de escalera
         } else {
             // Fuera de escalera: aplicar gravedad
-            physics.aplicarGravedad();
+            fisicas.aplicarGravedad();
         }
         
         // Power-ups
@@ -152,11 +163,11 @@ public class Jugador extends JuegoObjetos {
         }
         
         //  MOVIMIENTO (debe ir DESPUÉS de aplicar gravedad)
-        physics.tick();
+        fisicas.tick();
         
         // Límite de seguridad
         if (getY() > 2000) {
-            System.err.println("[EMERGENCIA] Player cayó fuera del mapa");
+            System.err.println("[EMERGENCIA] Jugador cayó fuera del mapa");
             if (estadoVida instanceof EstadoVidaJugador.Vivo) {
                 recibirDanio(null);
             }
@@ -175,14 +186,14 @@ public class Jugador extends JuegoObjetos {
         actualizarAnimacion();
     }
     
-    // ==================== RECIBIR DAÑO (Desacoplado con Observer) ====================
+    // ==================== RECIBIR DAÑO  ====================
     
     /**
-     * Recibe daño - REFACTORIZADO con Observer Pattern
+     * Recibe daño - Observer Pattern
      * 
-     * ✅ SRP: Solo gestiona su propio estado
-     * ✅ OCP: Listeners externos manejan consecuencias
-     * ✅ DIP: No depende de implementaciones concretas
+     *  SRP: Solo gestiona su propio estado
+     *  OCP: Listeners externos manejan consecuencias
+     *  DIP: No depende de implementaciones concretas
      */
     public void recibirDanio(JuegoObjetos enemigo) {
         // Verificar si puede recibir daño
@@ -190,26 +201,26 @@ public class Jugador extends JuegoObjetos {
             return;
         }
         
-        System.out.println("[PLAYER] ¡Recibió daño de: " + 
+        System.out.println("[JUGADOR] ¡Recibió daño de: " + 
                           (enemigo != null ? enemigo.getId() : "CAÍDA") + "!");
         
         //  EMITIR EVENTO (Notificar a observadores)
         EventoJugadorDañado event = new EventoJugadorDañado(this, enemigo);
-        eventManager.firePlayerDamaged(event);
+        eventManager.dispararJugadorDañado(event);
         
         //  Cambiar solo MI estado (SRP)
         cambiarEstadoVida(new EstadoVidaJugador.Muriendo(this));
         
         // Emitir evento de muerte
         EventoMuerteJugador deathEvent = new EventoMuerteJugador(this, enemigo);
-        eventManager.firePlayerDeath(deathEvent);
+        eventManager.dispararMuerteJugador(deathEvent);
     }
     
     /**
-     * Respawnea al jugador - REFACTORIZADO
+     * Respawnea al jugador 
      */
     public void respawnear() {
-    System.out.println("[PLAYER] Reapareciendo en punto de spawn.");
+    System.out.println("[JUGADOR] Reapareciendo en punto de spawn.");
         
         if (puntoSpawn != null) {
             // 1. Reposicionar en el punto de spawn
@@ -219,10 +230,10 @@ public class Jugador extends JuegoObjetos {
             // 2. Limpiar física
             setVelX(0);
             setVely(0);
-            physics.aplicarGravedad(); // Es crucial resetear la gravedad
+            fisicas.aplicarGravedad(); // Es crucial resetear la gravedad
     
         } else {
-            System.err.println("[PLAYER ERROR] No se ha configurado puntoSpawn. Aparecerá en (0,0).");
+            System.err.println("[JUGADOR ERROR] No se ha configurado puntoSpawn. Aparecerá en (0,0).");
             setX(0); setY(0);
         }
         
@@ -233,7 +244,7 @@ public class Jugador extends JuegoObjetos {
         }
         
         // 4. Asegurar la animación correcta (no la de muerte)
-        currAnimacion = playerCaminaS; 
+        currAnimacion = jugadorCaminaS; 
     
         adelante = true;
         
@@ -241,22 +252,22 @@ public class Jugador extends JuegoObjetos {
         EventoReaparicionJugador event = new EventoReaparicionJugador(
             this, puntoSpawn.x, puntoSpawn.y
         );
-        eventManager.firePlayerRespawn(event);
+        eventManager.dispararReaparicionJugador(event);
         
-        System.out.println("[PLAYER] Respawn completado");
+        System.out.println("[JUGADOR] Respawn completado");
     }
     
     /**
-     * Colecta un item - REFACTORIZADO
+     * Colecta un item 
      */
     public void colectarItem(String itemType, int puntos) {
-        System.out.println("[PLAYER] Colectó: " + itemType + " (+" + puntos + " pts)");
+        System.out.println("[JUGADOR] Colectó: " + itemType + " (+" + puntos + " pts)");
         
         // EMITIR EVENTO (Los listeners manejarán puntos, sonido, etc.)
         EventoJugadorRecogeObjeto event = new EventoJugadorRecogeObjeto(
             this, itemType, puntos
         );
-        eventManager.firePlayerCollectItem(event);
+        eventManager.dispararJugadorRecogeObjeto(event);
     }
     
     // ==================== VERIFICAR COLISIONES ENEMIGOS ====================
@@ -296,13 +307,13 @@ public class Jugador extends JuegoObjetos {
     // ==================== ANIMACIÓN ====================
     
     private void actualizarAnimacion() {
-        if (ladder.isEnEscalera()) {
+        if (escalera.isEnEscalera()) {
             // En escalera (siempre usa animación normal)
-            if (ladder.isSubiendoEscalera()) {
-                currAnimacion = playerSubeEscalera;
+            if (escalera.isSubiendoEscalera()) {
+                currAnimacion = jugadorSubeEscalera;
                 currAnimacion.runAnimacion();
-            } else if (ladder.isBajandoEscalera()) {
-                currAnimacion = playerBajaEscalera;
+            } else if (escalera.isBajandoEscalera()) {
+                currAnimacion = jugadorBajaEscalera;
                 currAnimacion.runAnimacion();
             }
             // Si está quieto en escalera, no correr animación
@@ -311,13 +322,13 @@ public class Jugador extends JuegoObjetos {
             
             // SELECCIONAR ANIMACIÓN SEGÚN SI TIENE MARTILLO
             if (tieneMartillo) {
-                currAnimacion = playerCaminaMartillo;
+                currAnimacion = jugadorCaminaMartillo;
             } else {
-                currAnimacion = playerCaminaS;
+                currAnimacion = jugadorCaminaS;
             }
             
             // Ejecutar animación solo si se está moviendo horizontalmente Y NO ESTÁ SALTANDO
-            if (getVelX() != 0 && !physics.hasSalto()) {
+            if (getVelX() != 0 && !fisicas.hasSalto()) {
                 currAnimacion.runAnimacion();
             }
         }
@@ -352,9 +363,9 @@ public class Jugador extends JuegoObjetos {
         int anchoRender, altoRender;
         int xRender, yRender;
         
-        if (tieneMartillo && !ladder.isEnEscalera()) {
+        if (tieneMartillo && !escalera.isEnEscalera()) {
             spritesActuales = spriteMartillo;
-            animacionCaminar = playerCaminaMartillo;
+            animacionCaminar = jugadorCaminaMartillo;
             anchoRender = (int) getWidth() * 2;
             altoRender = (int) getHeight() * 2;
             xRender = (int) getX() - (int) getWidth() / 2;
@@ -378,15 +389,15 @@ public class Jugador extends JuegoObjetos {
         }
         
         // Renderizar según estado
-        if (ladder.isEnEscalera()) {
-            if (ladder.isSubiendoEscalera() || ladder.isBajandoEscalera()) {
+        if (escalera.isEnEscalera()) {
+            if (escalera.isSubiendoEscalera() || escalera.isBajandoEscalera()) {
                 currAnimacion.drawAnimacion(g, (int) getX(), (int) getY(), 
                                            (int) getWidth(), (int) getHeight());
             } else {
                 g.drawImage(spriteS[5], (int) getX(), (int) getY(), 
                            (int) getWidth(), (int) getHeight(), null);
             }
-        } else if (physics.hasSalto()) {
+        } else if (fisicas.hasSalto()) {
             BufferedImage spriteJump = spritesActuales[3];
             if (adelante) {
                 g.drawImage(spriteJump, xRender, yRender, anchoRender, altoRender, null);
@@ -457,9 +468,9 @@ public class Jugador extends JuegoObjetos {
             poderMartillo.activar();
             tieneMartillo = true;
             
-            // ✅ EMITIR EVENTO
+            // EMITIR EVENTO
             EventoJugadorPoder event = new EventoJugadorPoder(this, "MARTILLO");
-            eventManager.firePlayerPowerUp(event);
+            eventManager.dispararJugadorGanaPoder(event);
             
             System.out.println("[PLAYER] ¡Martillo activado!");
         }
@@ -470,9 +481,9 @@ public class Jugador extends JuegoObjetos {
             poderMartillo.activar(duracionSegundos * 60);
             tieneMartillo = true;
             
-            // ✅ EMITIR EVENTO
+            // EMITIR EVENTO
             EventoJugadorPoder event = new EventoJugadorPoder(this, "MARTILLO");
-            eventManager.firePlayerPowerUp(event);
+            eventManager.dispararJugadorGanaPoder(event);
         }
     }
     
@@ -490,49 +501,49 @@ public class Jugador extends JuegoObjetos {
         return poderMartillo;
     }
     
-    // ==================== MOVIMIENTO (Delegado a componentes) ====================
+    // ==================== MOVIMIENTOS ====================
     
     public void iniciarSalto() {
-        if (!ladder.isEnEscalera()) {
-            physics.iniciarSalto();
+        if (!escalera.isEnEscalera()) {
+            fisicas.iniciarSalto();
         }
     }
     
     public void subirEscalera() {
         if (tieneMartillo) return;
-        ladder.subirEscalera(physics.getVelocidadEscalera());
+        escalera.subirEscalera(fisicas.getVelocidadEscalera());
     }
     
     public void bajarEscalera() {
         if (tieneMartillo) return;
-        ladder.bajarEscalera(physics.getVelocidadEscalera());
+        escalera.bajarEscalera(fisicas.getVelocidadEscalera());
     }
     
     public void detenerMovimientoVertical() {
-        ladder.detenerMovimientoVertical();
+        escalera.detenerMovimientoVertical();
     }
     
     public void moverIzquierda() {
-        if (!ladder.isEnEscalera()) {
-            physics.moverIzquierda();
+        if (!escalera.isEnEscalera()) {
+            fisicas.moverIzquierda();
         } else {
-            ladder.salirEscalera();
-            physics.moverIzquierda();
+            escalera.salirEscalera();
+            fisicas.moverIzquierda();
         }
     }
     
     public void moverDerecha() {
-        if (!ladder.isEnEscalera()) {
-            physics.moverDerecha();
+        if (!escalera.isEnEscalera()) {
+            fisicas.moverDerecha();
         } else {
-            ladder.salirEscalera();
-            physics.moverDerecha();
+            escalera.salirEscalera();
+            fisicas.moverDerecha();
         }
     }
     
     public void detenerMovimiento() {
-        if (!ladder.isEnEscalera()) {
-            physics.detenerMovimiento();
+        if (!escalera.isEnEscalera()) {
+            fisicas.detenerMovimiento();
         }
     }
     
@@ -606,7 +617,7 @@ public class Jugador extends JuegoObjetos {
     
     public void setPuntoSpawn(int x, int y) {
         puntoSpawn = new Point(x, y);
-        System.out.println("[PLAYER] Nuevo punto de spawn: (" + x + ", " + y + ")");
+        System.out.println("[JUGADOR] Nuevo punto de spawn: (" + x + ", " + y + ")");
     }
     
     public Point getPuntoSpawn() {
@@ -622,29 +633,29 @@ public class Jugador extends JuegoObjetos {
     }
     
     public boolean hasSalto() {
-        return physics.hasSalto();
+        return fisicas.hasSalto();
     }
     
     public void setSalto(boolean salto) {
-        physics.setSalto(salto);
+        fisicas.setSalto(salto);
     }
     
     public boolean isEnEscalera() {
-        return ladder.isEnEscalera();
+        return escalera.isEnEscalera();
     }
     
     public boolean isSubiendoEscalera() {
-        return ladder.isSubiendoEscalera();
+        return escalera.isSubiendoEscalera();
     }
     
     public boolean isBajandoEscalera() {
-        return ladder.isBajandoEscalera();
+        return escalera.isBajandoEscalera();
     }
     
     @Override
     public void aplicarGravedad() {
-        if (!ladder.isEnEscalera()) {
-            physics.aplicarGravedad();
+        if (!escalera.isEnEscalera()) {
+            fisicas.aplicarGravedad();
         }
     }
 }

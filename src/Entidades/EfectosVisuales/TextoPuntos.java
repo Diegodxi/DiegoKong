@@ -1,7 +1,7 @@
 package Entidades.EfectosVisuales;
 
 import Entidades.JuegoObjetos;
-import SistemaDeSoporte.Handler;
+import PatronesComportamiento.Mediator.Handler;
 import SistemaDeSoporte.ObjetosID;
 import java.awt.Color;
 import java.awt.Font;

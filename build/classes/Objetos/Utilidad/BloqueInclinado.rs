@@ -1,2 +1,0 @@
-Objetos.BloqueInclinado
-Objetos.BloqueInclinado$TipoPendiente

@@ -1,6 +1,6 @@
 package SistemaDeNiveles;
 
-import SistemaDeSoporte.Handler;
+import PatronesComportamiento.Mediator.Handler;
 import Entidades.NPCs.DiegoKong;
 import Entidades.NPCs.Princesa;
 import Entidades.Jugador;
@@ -204,7 +204,7 @@ public class TiledTMXParser {
             
             InputStream is = getClass().getResourceAsStream(rutaCompleta);
             if (is == null) {
-                System.err.println("[ERROR] No se encontro TSX: " + rutaCompleta);
+                //System.err.println("[ERROR] No se encontro TSX: " + rutaCompleta);
                 return;
             }
             
@@ -315,7 +315,7 @@ public class TiledTMXParser {
             // Verificar si tiene colisión
             boolean tieneColision = tilesConColision.getOrDefault(tileID, false);
             
-            // ✅ CREAR TILE UNIFICADO
+            //  CREAR TILE UNIFICADO
             crearTile(worldX, worldY, tileID, tieneColision, estaCapaEsFondo);
             
             procesarTileEspecial(tileID, worldX, worldY);
@@ -412,11 +412,11 @@ public class TiledTMXParser {
    private void posicionarMario(int x, int y) {
         Jugador player = handler.getPlayer();
         if (player != null) {
-            // ✅ ESTABLECER POSICIÓN INICIAL
+            // ESTABLECER POSICIÓN INICIAL
             player.setX(x);
             player.setY(y - TILE_RENDER_SIZE);
             
-            // ✅ ESTABLECER PUNTO DE SPAWN (CRÍTICO PARA RESPAWN)
+            // ESTABLECER PUNTO DE SPAWN (CRÍTICO PARA RESPAWN)
             player.setPuntoSpawn(x, y - TILE_RENDER_SIZE);
             
             System.out.println("[SPAWN]  Mario posicionado en: (" + x + ", " + (y - TILE_RENDER_SIZE) + ")");

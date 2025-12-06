@@ -3,16 +3,16 @@ package Entidades.NPCs;
 import Entidades.JuegoObjetos;
 import Entidades.Jugador;
 import SistemaGFX.Animacion;
-import SistemaDeSoporte.Handler;
+import PatronesComportamiento.Mediator.Handler;
 import SistemaDeSoporte.ObjetosID;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import mariotest.Juego;
+import PatronesEstructurales.Facade.Juego;
 
 /**
- * Clase Princesa con animación de movimiento hacia DK
+ * 
  * * @author LENOVO
  */
 public class Princesa extends JuegoObjetos {
@@ -111,7 +111,7 @@ public class Princesa extends JuegoObjetos {
                 tickEnPeligro();
                 break;
                 
-            case SIENDO_LLEVADA: // 🆕 NUEVO
+            case SIENDO_LLEVADA: 
                 tickSiendoLlevada();
                 break;
         }
@@ -212,12 +212,6 @@ public class Princesa extends JuegoObjetos {
         if (player == null) return;
         
         float distanciaX = Math.abs(player.getX() - getX());
-        
-        // ==================== CAMBIO CLAVE ====================
-        // La lógica de victoria (distX < 30 && distY < 30) se elimina.
-        // GestorNiveles es ahora el único responsable de detectar la victoria.
-        // Esta función ahora solo hace que la princesa mire al jugador.
-        // ======================================================
         
         if (distanciaX < 100) {
             mirandoDerecha = player.getX() > getX();
